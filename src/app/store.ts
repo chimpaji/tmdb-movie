@@ -2,14 +2,16 @@
 
 import { tmdbApi } from '../features/tmdbApi/tmdbApi';
 import { configureStore } from '@reduxjs/toolkit';
+import genreOrCategoryReducer from '../features/genreOrCategory/genreOrCategory';
 
 //pass the reducer in reducers key
 export const store = configureStore({
-	reducer: {
-		[tmdbApi.reducerPath]: tmdbApi.reducer,
-	},
-	middleware: (getDefaultMiddleware) =>
-		getDefaultMiddleware().concat(tmdbApi.middleware),
+  reducer: {
+    [tmdbApi.reducerPath]: tmdbApi.reducer,
+    genreOrCategory: genreOrCategoryReducer,
+  },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(tmdbApi.middleware),
 });
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;

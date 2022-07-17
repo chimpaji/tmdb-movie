@@ -36,23 +36,25 @@ const Navbar = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery('(max-width:600px');
   const isAuthenticated = true;
-  const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [mobileOpen, setMobileOpen] = React.useState(true);
   const drawerWidth = 240;
   return (
     <Box sx={{ display: 'flex' }}>
       <AppBar position='fixed'>
         <Toolbar sx={toolbarStyles}>
           {isMobile && (
-            <IconButton
-              color='inherit'
-              edge='start'
-              onClick={() => {
-                setMobileOpen(true);
-              }}
-              sx={{}}
-            >
-              <Menu />
-            </IconButton>
+            <>
+              <IconButton
+                color='inherit'
+                edge='start'
+                onClick={() => {
+                  setMobileOpen(true);
+                }}
+                sx={{}}
+              >
+                <Menu />
+              </IconButton>
+            </>
           )}
           <IconButton color='inherit' edge='end' onClick={() => {}}>
             {theme.palette.mode === 'dark' ? <Brightness7 /> : <Brightness4 />}

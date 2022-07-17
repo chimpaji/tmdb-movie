@@ -1,3 +1,4 @@
+import { useGetGenresQuery } from '../../features/tmdbApi/tmdbApi';
 import { Brightness4, Brightness7 } from '@mui/icons-material';
 import {
   Box,
@@ -15,10 +16,16 @@ import {
 } from '@mui/material';
 import React from 'react';
 import { Link } from 'react-router-dom';
+import genresIcon from '../../assets/genres';
+// import { useAppDispatch } from '../../app/hooks';
+import { selectGenreOrCatagory } from '../../features/genreOrCategory/genreOrCategory';
+import { useAppDispatch } from '../../app/hooks';
 const drawerWidth = 240;
 
+// const blueLogo =
+//   'https://fontmeme.com/permalink/210930/8531c658a743debe1e1aa1a2fc82006e.png';
 const blueLogo =
-  'https://fontmeme.com/permalink/210930/8531c658a743debe1e1aa1a2fc82006e.png';
+  'https://www.themoviedb.org/assets/2/v4/logos/v2/blue_square_2-d537fb228cf3ded904ef09b136fe3fec72548ebc1fea3fbbd1ad9e36364db38b.svg';
 const redLogo =
   'https://fontmeme.com/permalink/210930/6854ae5c7f76597cf8680e48a2c8a50a.png';
 
@@ -29,13 +36,16 @@ type SideBarProps = {
 
 const Sidebar = ({ setMobileOpen, mobileOpen }: SideBarProps) => {
   const isMobile = useMediaQuery('(max-width:600px');
+  const { data: genres } = useGetGenresQuery(null);
+  const dispatch = useAppDispatch();
+
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
   const theme = useTheme();
   const category = [
     { label: 'Popular', value: 'popular' },
-    { label: 'Featured', value: 'featured' },
+    { label: 'Now playing', value: 'now_playing' },
     { label: 'Upcoming', value: 'upcoming' },
   ];
   const demoCategories = [
@@ -60,11 +70,19 @@ const Sidebar = ({ setMobileOpen, mobileOpen }: SideBarProps) => {
       <List>
         <ListSubheader>Categories</ListSubheader>
         {category.map((CAT, index) => (
-          <ListItem key={CAT.value} disablePadding onClick={() => {}}>
+          <ListItem
+            key={CAT.value}
+            disablePadding
+            onClick={() => {
+              dispatch(
+                selectGenreOrCatagory({ select: 'category', value: CAT.value })
+              );
+            }}
+          >
             <ListItemButton>
-              {/* <ListItemIcon>
-                <img src={redLogo} alt='logo' height={30} />
-              </ListItemIcon> */}
+              <ListItemIcon>
+                <img src={genresIcon[CAT.value]} alt='logo' height={30} />
+              </ListItemIcon>
               <ListItemText primary={CAT.label} />
             </ListItemButton>
           </ListItem>
@@ -73,13 +91,23 @@ const Sidebar = ({ setMobileOpen, mobileOpen }: SideBarProps) => {
       <Divider />
       <List>
         <ListSubheader>Genres</ListSubheader>
-        {demoCategories.map((CAT, index) => (
-          <ListItem key={CAT.value} disablePadding onClick={() => {}}>
+        {genres?.genres.map(({ name, id }, index) => (
+          <ListItem
+            key={name}
+            disablePadding
+            onClick={() => {
+              dispatch(selectGenreOrCatagory({ select: 'genre', value: id }));
+            }}
+          >
             <ListItemButton>
-              {/* <ListItemIcon>
-                <img src={redLogo} alt='logo' height={30} />
-              </ListItemIcon> */}
-              <ListItemText primary={CAT.label} />
+              <ListItemIcon>
+                <img
+                  src={genresIcon[name.toLowerCase()]}
+                  alt='logo'
+                  height={30}
+                />
+              </ListItemIcon>
+              <ListItemText primary={name} />
             </ListItemButton>
           </ListItem>
         ))}
